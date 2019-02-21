@@ -4,14 +4,13 @@ d3.csv("movies.csv").then(function (dataset) {
         d.Rating = +d.Rating;
         d.WinsNoms = +d.WinsNoms;
         d.IsGoodRating = +d.IsGoodRating;
-        d.Budget = +d.Budget;
-        d.Votes = +d.Votes;
+        d.Budget = +d.Budget;        
     });
     var w = 600;
     var h = 400;
     var padding = 40;
 
-    var xScaleRating = d3.scaleLinear()
+    var xScaleRating1 = d3.scaleLinear()
         .domain([0, d3.max(dataset, function (d) {
             return d.Rating;
         })]).range([padding, w - padding * 2]);
@@ -22,7 +21,7 @@ d3.csv("movies.csv").then(function (dataset) {
         })]).range([h - padding, padding]);
     
     // Define X axis
-    var xAxisRating = d3.axisBottom(xScaleRating).ticks(10);
+    var xAxisRating1 = d3.axisBottom(xScaleRating1).ticks(10);
     //Define Y axis
     var yAxisWinsNoms = d3.axisLeft(yScaleWinsNoms).ticks(10);
 
@@ -35,13 +34,13 @@ d3.csv("movies.csv").then(function (dataset) {
         .enter().append("path").attr("class", "point")
         .attr("d", d3.symbol().size(40).type(d => d.IsGoodRating == 0 ? d3.symbolCircle : d3.symbolCross))
         .attr("fill", "none")
-        .attr("stroke", d => d.IsGoodRating ? "red" : "blue")
+        .attr("stroke", d => d.IsGoodRating == 0 ? "red" : "blue")
         .attr('transform', function (d) {
-            return "translate(" + xScaleRating(d.Rating) + "," + yScaleWinsNoms(d.WinsNoms) + ")";
+            return "translate(" + xScaleRating1(d.Rating) + "," + yScaleWinsNoms(d.WinsNoms) + ")";
         });
 
     //draw X axis
-    svg1.append("g").attr("class", "axis").attr("transform", "translate(0," + (h - padding) + ")").call(xAxisRating);
+    svg1.append("g").attr("class", "axis").attr("transform", "translate(0," + (h - padding) + ")").call(xAxisRating1);
     //draw Y axis
     svg1.append("g").attr("class", "axis").attr("transform", "translate(" + padding + ",0)").call(yAxisWinsNoms);
     // add label
@@ -57,8 +56,8 @@ d3.csv("movies.csv").then(function (dataset) {
         });
 
     legendRW.append("path").style("fill", "none")
-        .style("stroke", d => d == 0 ? "red" : "blue")
-        .attr("d", d3.symbol().size(40).type(d => d.IsGoodRating == 0 ? d3.symbolCircle : d3.symbolCross))
+        .style("stroke", d => d == 0 ? "blue" : "red")
+        .attr("d", d3.symbol().size(40).type(d => d == 0 ? d3.symbolCross : d3.symbolCircle))
         .attr("transform", function (d, i) {
             return "translate(" + (w - 10) + "," + 47 + ")";
         });
@@ -67,10 +66,16 @@ d3.csv("movies.csv").then(function (dataset) {
         .text(d => d == 0 ? "Good Rating" : "Bad Rating");
 
     ////////////////////////////////////////////////////////////////// CHART 2////////////////////////////////////////////////////////////////
+    var xScaleRating2 = d3.scaleLinear()
+        .domain([0, d3.max(dataset, function (d) {
+            return d.Rating;
+        })]).range([padding * 2 - 10, w - padding * 2]);
     var yScaleBudget = d3.scaleLinear()
         .domain([0, d3.max(dataset, function (d) {
             return d.Budget;
         })]).range([h - padding, padding]);
+
+    var xAxisRating2 = d3.axisBottom(xScaleRating2).ticks(10);
     var yAxisBudget = d3.axisLeft(yScaleBudget).ticks(10);
 
     var svg2 = d3.select("body").append("svg").attr("width", w).attr("height", h);
@@ -79,13 +84,13 @@ d3.csv("movies.csv").then(function (dataset) {
         .enter().append("path").attr("class", "point")
         .attr("d", d3.symbol().size(40).type(d => d.IsGoodRating == 0 ? d3.symbolCircle : d3.symbolCross))
         .attr("fill", "none")
-        .attr("stroke", d => d.IsGoodRating ? "red" : "blue")
+        .attr("stroke", d => d.IsGoodRating == 0 ? "red" : "blue")
         .attr('transform', function (d) {
-            return "translate(" + xScaleRating(d.Rating) + "," + yScaleBudget(d.Budget) + ")";
+            return "translate(" + xScaleRating2(d.Rating) + "," + yScaleBudget(d.Budget) + ")";
         });
 
     //draw X axis
-    svg2.append("g").attr("class", "axis").attr("transform", "translate(0," + (h - padding) + ")").call(xAxisRating);
+    svg2.append("g").attr("class", "axis").attr("transform", "translate(0," + (h - padding) + ")").call(xAxisRating2);
     //draw Y axis
     svg2.append("g").attr("class", "axis").attr("transform", "translate(" + 70 + ",0)").call(yAxisBudget);
     // add label
@@ -100,8 +105,8 @@ d3.csv("movies.csv").then(function (dataset) {
             return "translate(0," + i * 20 + ")";
         });
     legendRB.append("path").style("fill", "none")
-        .style("stroke", d => d == 0 ? "red" : "blue")
-        .attr("d", d3.symbol().size(40).type(d => d == 0 ? d3.symbolCircle : d3.symbolCross))
+        .style("stroke", d => d == 0 ? "blue" : "red")
+        .attr("d", d3.symbol().size(40).type(d => d == 0 ? d3.symbolCross : d3.symbolCircle))
         .attr("transform", function (d, i) {
             return "translate(" + (w - 10) + "," + 47 + ")";
         });
